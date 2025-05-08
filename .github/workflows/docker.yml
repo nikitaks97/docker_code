@@ -28,6 +28,8 @@ jobs:
       # Step 3: Create a text file inside the container filesystem
       - name: Create a file
         run: echo "some text" >> text.txt
+      - name: list files
+        run: ls -a
 
       # Step 4: Run a single container-based step (Node.js 18)
       # This is an *independent* container step, separate from the job container above.
