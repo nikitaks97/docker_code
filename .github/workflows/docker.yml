@@ -3,14 +3,14 @@ on: [workflow_dispatch]
 
 jobs:
  docker_job:
-  runs-on:
-   container:
-    image: node:20.3-alpine3.17
-     credentials:
-      username:
-      password:
+  runs-on: ubuntu-latest
+  container:
+     image: node:20.3-alpine3.17
+     #credentials:
+     # username:
+      #password:
      env:
-      URL: www.google.com
+       URL: www.google.com
      ports:
       - 80
       # volumes:
@@ -18,7 +18,7 @@ jobs:
       #   - /path/to/container
       #   - /path/in/host:/path/in/container
       # options: --cpus 1
-   steps:
+  steps:
       - name: Log Node & OS Versions
         run: |
           node -v
