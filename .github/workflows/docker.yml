@@ -1,40 +1,47 @@
 name: docker
+# Trigger this workflow manually via GitHub UI
 on: [workflow_dispatch]
 
 jobs:
- docker_job:
-  runs-on: ubuntu-latest
-  container:
-     image: node:20.3-alpine3.17
-     #credentials:
-     # username:
-      #password:
-     env:
-       URL: www.google.com
-     ports:
-      - 80
-      # volumes:
-      #   - vol_name:/path/in/container
-      #   - /path/to/container
-      #   - /path/in/host:/path/in/container
-      # options: --cpus 1
-  steps:
+  docker_job:
+    runs-on: ubuntu-latest
+
+    # Run the entire job inside a Docker container using Node.js 20 on Alpine Linux
+    container:
+      image: node:20.3-alpine3.17
+      env:
+        URL: www.google.com  # Set environment variable inside container
+      ports:
+        - 80  # (Optional) Expose port 80 inside the container
+
+    steps:
+      # Step 1: Log the version of Node.js and OS details
       - name: Log Node & OS Versions
         run: |
           node -v
           cat /etc/os-release
+
+      # Step 2: Print the value of the environment variable `URL`
       - name: Log Env
         run: echo $URL
-      - name: create a file
+
+      # Step 3: Create a text file inside the container filesystem
+      - name: Create a file
         run: echo "some text" >> text.txt
-      
+
+      # Step 4: Run a single container-based step (Node.js 18)
+      # This is an *independent* container step, separate from the job container above.
       - name: Container in a Step
         uses: docker://node:18.16-alpine3.17
         with:
-          entrypoint: /usr/local/bin/node
-          args: -p 2+3
+          entrypoint: /usr/local/bin/node  # Override entrypoint to run Node.js
+          args: -p 2+3  # Pass JavaScript code to evaluate 2 + 3
+
+      # Step 5: Try to read the previously created file using a new container
+      # NOTE: This will **fail** unless you mount volumes or run inside same job container
       - name: Show file contents
         uses: docker://node:18.16-alpine3.17
         with:
           entrypoint: cat
-          args: text.txt   # both the step containers are sharing the same volume with the job container thats why the file created inside the job container can be accessed from the other two containers
+          args: text.txt  # Try to read the file created earlier
+  # both the step containers are sharing the same volume with the job container thats why the file created inside the job container can be accessed from the other two containers
