@@ -53,4 +53,13 @@ jobs:
         with:
          entrypoint: ./script.sh
          args: "some string"
+
+      - name: send a slack message
+        uses: docker://node:18.16-alpine3.17
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_TITLE: From Github actions
+          SLACK_MESSAGE: "Actor : ${{github.actor}}, Event : ${{github.event_name}}"
+          SLACK_COLOR: "#723fc4"
+         
        
