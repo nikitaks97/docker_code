@@ -47,6 +47,7 @@ jobs:
           entrypoint: cat
           args: text.txt  # Try to read the file created earlier
   # both the step containers are sharing the same volume with the job container thats why the file created inside the job container can be accessed from the other two containers
+      - uses: actions/checkout@v4
       - name: run a bash script
         uses: docker://node:18.16-alpine3.17
         with:
